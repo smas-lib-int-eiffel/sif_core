@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-16-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-16-0 http://www.eiffel.com/developers/xml/configuration-1-16-0.xsd" name="sif_core" uuid="06E1C0DE-3896-4210-B262-9046FC254916" library_target="sif_core">
+	<description>System Interface Framework core library.</description>
+	<target name="sif_core">
+		<description>System Interface Framework core library.</description>
+		<root all_classes="true"/>
+		<file_rule>
+			<exclude>/CVS$</exclude>
+			<exclude>/EIFGENs$</exclude>
+			<exclude>/\.git$</exclude>
+			<exclude>/\.svn$</exclude>
+		</file_rule>
+		<option debug="true" warning="true" is_obsolete_routine_type="true" syntax="standard">
+			<debug name="__unnamed_debug__" enabled="true"/>
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<capability>
+			<concurrency support="none"/>
+			<void_safety support="all" use="all"/>
+		</capability>
+		<library name="base" location="$ISE_LIBRARY/library/base/base-safe.ecf"/>
+		<library name="gobo_regexp" location="$ISE_LIBRARY/library/gobo/gobo_regexp-safe.ecf"/>
+		<library name="iso_8601" location="$ISE_LIBRARY/contrib/library/iso/iso_8601/src/iso8601.ecf"/>
+		<library name="logging" location="$ISE_LIBRARY/library/runtime/logging/logging.ecf"/>
+		<library name="shared_logging" location="$ISE_LIBRARY/contrib/library/runtime/logging/shared/src/shared_logging.ecf" readonly="false"/>
+		<library name="base_process" location="$ISE_LIBRARY/library/process/base/base_process.ecf"/>
+		<library name="time" location="$ISE_LIBRARY/library/time/time-safe.ecf"/>
+		<cluster name="sif_core" location="." recursive="true"/>
+	</target>
+</system>
