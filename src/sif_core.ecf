@@ -20,9 +20,9 @@
 		</capability>
 		<library name="base" location="$ISE_LIBRARY/library/base/base-safe.ecf"/>
 		<library name="gobo_regexp" location="$ISE_LIBRARY/library/gobo/gobo_regexp-safe.ecf"/>
-		<library name="iso_8601" location="$ISE_LIBRARY/contrib/library/iso/iso_8601/src/iso8601.ecf"/>
+		<library name="iso_8601" location="$ISE_LIBRARY/external/library/iso/iso_8601/src/iso8601.ecf"/>
 		<library name="logging" location="$ISE_LIBRARY/library/runtime/logging/logging.ecf"/>
-		<library name="shared_logging" location="$ISE_LIBRARY/contrib/library/runtime/logging/shared/src/shared_logging.ecf" readonly="false"/>
+		<library name="shared_logging" location="$ISE_LIBRARY/external/library/runtime/logging/shared/src/shared_logging.ecf" readonly="false"/>
 		<library name="base_process" location="$ISE_LIBRARY/library/process/base/base_process.ecf"/>
 		<library name="time" location="$ISE_LIBRARY/library/time/time-safe.ecf"/>
 		<cluster name="sif_core" location="." recursive="true"/>
