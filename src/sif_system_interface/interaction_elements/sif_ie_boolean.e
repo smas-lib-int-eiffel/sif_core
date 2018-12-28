@@ -60,10 +60,10 @@ feature -- Element change
 
 feature -- Event types
 
-	event_input: SIF_EVENT_TYPE [TUPLE [BOOLEAN]]
+	event_input: EVENT_TYPE [TUPLE [BOOLEAN]]
 			-- event to be used to publish an event from a system interface
 
-	event_output: SIF_EVENT_TYPE [TUPLE [BOOLEAN]]
+	event_output: EVENT_TYPE [TUPLE [BOOLEAN]]
 			-- event to be used to publish an event from the model
 
 feature {NONE} -- Implementation

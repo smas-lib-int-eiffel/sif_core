@@ -409,7 +409,7 @@ feature {SIF_INTERACTOR} -- Implementation
 			-- <PreCursor>
 		do
 			Precursor
-			event_ended.wipe_out
+			event_ended.dispose
 			pagination_capable := false
 		end
 

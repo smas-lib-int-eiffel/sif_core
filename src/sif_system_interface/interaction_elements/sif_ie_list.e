@@ -62,7 +62,7 @@ feature -- Element change
 
 feature -- Event types
 
-	event: SIF_EVENT_TYPE [TUPLE []]
+	event: EVENT_TYPE [TUPLE []]
 			-- event to be used to publish an event from a system interface
 
 feature -- Implementation

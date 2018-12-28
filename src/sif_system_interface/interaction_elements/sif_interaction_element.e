@@ -86,9 +86,9 @@ feature -- Initialization
 			events.do_all (agent reset_event)
 		end
 
-	reset_event(an_event: SIF_EVENT_TYPE[TUPLE])
+	reset_event(an_event: EVENT_TYPE[TUPLE])
 		do
-			an_event.wipe_out
+			an_event.dispose
 		end
 
 feature -- Functionality
@@ -98,7 +98,7 @@ feature -- Functionality
 		require
 			--has_system_interface: has_system_interface
 		do
-			across events as l_events loop l_events.item.restore_subscription end
+			across events as l_events loop l_events.item.restore_subscriptions end
 			do_restore_subscriptions
 		end
 
@@ -111,14 +111,14 @@ feature -- Functionality
 	suspend_subscriptions
 		-- Suspend all subscriptions from events
 		do
-			across events as l_events loop l_events.item.suspend_subscription end
+			across events as l_events loop l_events.item.suspend_subscriptions end
 			do_suspend_subscriptions
 		end
 
 	do_suspend_subscriptions
 		do
 			-- Intended to be emtpy.
-			-- Override for interaction element which contain interaction elements, so they their subscriptions can also be suspended
+			-- Override for interaction element which contain interaction elements, so their subscriptions can also be suspended
 		end
 
 	enable
@@ -234,7 +234,7 @@ feature {SIF_INTERACTION_ELEMENT, SIF_INTERACTION_ELEMENT_SORTED_SET} -- Impleme
 	sorting_number: INTEGER
 			-- Used for sorting interaction elements
 
-	events: LINKED_LIST[SIF_EVENT_TYPE[TUPLE[]]]
+	events: LINKED_LIST[EVENT_TYPE[TUPLE[]]]
 			-- Storage for all events of the interaction element
 
 	system_interface: detachable SIF_SYSTEM_INTERFACE
@@ -293,13 +293,13 @@ feature {SIF_INTERACTION_ELEMENT} -- Conversion
 
 feature	-- Implementation public
 
-	event_disable: SIF_EVENT_TYPE [TUPLE[]]
+	event_disable: EVENT_TYPE [TUPLE[]]
 
-	event_enable: SIF_EVENT_TYPE [TUPLE[]]
+	event_enable: EVENT_TYPE [TUPLE[]]
 
-	event_visible: SIF_EVENT_TYPE [TUPLE[]]
+	event_visible: EVENT_TYPE [TUPLE[]]
 
-	event_unvisible: SIF_EVENT_TYPE [TUPLE[]]
+	event_unvisible: EVENT_TYPE [TUPLE[]]
 
 feature -- Descriptor
 

@@ -45,10 +45,10 @@ feature -- Access questions
 
 feature -- Event types
 
-	event_question_categories: SIF_EVENT_TYPE [TUPLE [like categorized_questions]]
+	event_question_categories: EVENT_TYPE [TUPLE [like categorized_questions]]
 			-- event to be used to publish the activities to present
 
-	event_questions_update: SIF_EVENT_TYPE [TUPLE ]
+	event_questions_update: EVENT_TYPE [TUPLE ]
 			-- event to be used to receive an event when a system interface has to update the questions.
 
 feature {NONE} -- Implementation

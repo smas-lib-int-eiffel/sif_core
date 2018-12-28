@@ -108,16 +108,16 @@ feature -- Implementation
 
 feature -- Event types
 
-	event_output: SIF_EVENT_TYPE [TUPLE [STRING_32]]
+	event_output: EVENT_TYPE [TUPLE [STRING_32]]
 			-- event to be used to publish changes to the text presented by the system interface
 
-	event_input: SIF_EVENT_TYPE [TUPLE [STRING_32]]
+	event_input: EVENT_TYPE [TUPLE [STRING_32]]
 			-- event to be used to publish changes to the text used by the problem domain
 
-	event_input_valid: SIF_EVENT_TYPE [TUPLE [BOOLEAN]]
+	event_input_valid: EVENT_TYPE [TUPLE [BOOLEAN]]
 			-- event to be used to publish if state of the input is valid, according to the applied input validator
 
-	event_focus: SIF_EVENT_TYPE [TUPLE[]]
+	event_focus: EVENT_TYPE [TUPLE[]]
 			-- event to used to force the input focus
 
 

@@ -27,8 +27,6 @@ feature -- Creation
 			create event_label
 			create event_output_select
 			create event_output_deselect
-			create event_add_submit
-			create event_submit
 
 			Precursor (an_interaction_element_identifier, a_sorted_set_of_interaction_elements, a_type, a_descriptor)
 
@@ -36,8 +34,6 @@ feature -- Creation
 			events.extend (event_output_select)
 			events.extend (event_output_deselect)
 			events.extend (event_label)
-			events.extend (event_add_submit)
-			events.extend (event_submit)
 
 			selected := false
 			event_output_deselect.subscribe ( agent handle_deselected)
@@ -46,24 +42,17 @@ feature -- Creation
 
 feature -- Event types
 
-	event: SIF_EVENT_TYPE [TUPLE []]
+	event: EVENT_TYPE [TUPLE []]
 			-- event to be used to publish an event from a system interface
 
-	event_output_select: SIF_EVENT_TYPE [TUPLE []]
+	event_output_select: EVENT_TYPE [TUPLE []]
 			-- event to be used to publish a select event to a system interface component, e.g. a link label
 
-	event_output_deselect: SIF_EVENT_TYPE [TUPLE []]
+	event_output_deselect: EVENT_TYPE [TUPLE []]
 			-- event to be used to publish a deselect event to a system interface component, e.g. a link label			
 
-	event_label: SIF_EVENT_TYPE [TUPLE[STRING]]
+	event_label: EVENT_TYPE [TUPLE[STRING]]
 			-- event to be used to publish a label text change event to a system interface component, e.g. a button
-
-	-- Special event to test the submit button on the webpage
-	event_add_submit: SIF_EVENT_TYPE [TUPLE []]
-			-- special event to be used to publish that it needs to attach a submit function, e.g. a submit button
-
-	event_submit: SIF_EVENT_TYPE [TUPLE [STRING_TABLE[STRING]]]
-			-- event to be used to publish submitted information to the system interface, e.g. a submit button
 
 feature -- Status
 

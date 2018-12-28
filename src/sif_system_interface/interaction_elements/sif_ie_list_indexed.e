@@ -20,10 +20,10 @@ create
 
 feature -- Event types
 
-	event_list_indexed: SIF_EVENT_TYPE [TUPLE [ARRAY[TUPLE[INTEGER,STRING]]]]
+	event_list_indexed: EVENT_TYPE [TUPLE [ARRAY[TUPLE[INTEGER,STRING]]]]
 			-- event to be used to publish an event from a system interface
 
-	event_label: SIF_EVENT_TYPE [TUPLE[STRING]]
+	event_label: EVENT_TYPE [TUPLE[STRING]]
 			-- event to be used to publish a label text change event to a system interface
 
 feature -- Creation

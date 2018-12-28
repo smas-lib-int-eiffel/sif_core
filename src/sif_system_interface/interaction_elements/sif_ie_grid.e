@@ -128,16 +128,16 @@ feature {NONE} -- Implementation
 
 feature -- Event types
 
-	event_list: SIF_EVENT_TYPE [TUPLE [ARRAY[ARRAY[STRING]]]]
+	event_list: EVENT_TYPE [TUPLE [ARRAY[ARRAY[STRING]]]]
 			-- event to be used to manage the content of the list of the grid
 
-	event_output_header: SIF_EVENT_TYPE [TUPLE [ARRAY [STRING]] ]
+	event_output_header: EVENT_TYPE [TUPLE [ARRAY [STRING]] ]
 			-- event to be used to manage the content of a header of the grid
 
-	event_input_row_selected: SIF_EVENT_TYPE [TUPLE[INTEGER]]
+	event_input_row_selected: EVENT_TYPE [TUPLE[INTEGER]]
 			-- event to be used when a row in the grid is selected by user interaction
 
-	event_output_row_selected: SIF_EVENT_TYPE [TUPLE[INTEGER]]
+	event_output_row_selected: EVENT_TYPE [TUPLE[INTEGER]]
 			-- event to be used when a row is selected by the model
 
 feature {NONE} -- System interface control side call_backs

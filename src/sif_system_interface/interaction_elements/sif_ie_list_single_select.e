@@ -78,22 +78,22 @@ feature -- Access
 
 feature -- Event types
 
-	event_list: SIF_EVENT_TYPE [TUPLE [ARRAY[ARRAY[STRING]]]]
+	event_list: EVENT_TYPE [TUPLE [ARRAY[ARRAY[STRING]]]]
 			-- event to be used to publish an event from a system interface
 
-	event_list_update: SIF_EVENT_TYPE [TUPLE []]
+	event_list_update: EVENT_TYPE [TUPLE []]
 			-- event to be used to receive an event when a system interface has to update the list
 
-	event_label: SIF_EVENT_TYPE [TUPLE[STRING]]
+	event_label: EVENT_TYPE [TUPLE[STRING]]
 			-- event to be used to publish a label text change event to a system interface
 
-	event_output_selection: SIF_EVENT_TYPE [TUPLE[INTEGER]]
+	event_output_selection: EVENT_TYPE [TUPLE[INTEGER]]
 			-- event to be used to output a selection controlled by an interactor
 
-	event_input_selection: SIF_EVENT_TYPE [TUPLE[INTEGER]]
+	event_input_selection: EVENT_TYPE [TUPLE[INTEGER]]
 			-- event to be used to signal a selection from the system interface	
 
-	event_get_selection: SIF_EVENT_TYPE [TUPLE []]
+	event_get_selection: EVENT_TYPE [TUPLE []]
 			-- event to be used to signal to get a selection info from the system interface
 
 feature {NONE} -- Implementation

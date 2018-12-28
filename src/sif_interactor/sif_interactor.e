@@ -148,7 +148,7 @@ feature -- Execution
 			Result := system_interface = void
 		end
 
-	event_ended: SIF_EVENT_TYPE[ TUPLE[SIF_INTERACTOR]]
+	event_ended: EVENT_TYPE[ TUPLE[SIF_INTERACTOR]]
 			-- The event to publish to indicate that the interactor has ended interaction
 
 	end_execution
