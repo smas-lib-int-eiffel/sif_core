@@ -19,7 +19,7 @@ create {SIF_SHARED_COMMAND_MANAGER}
 
 feature -- Status
 
-	has_unique_descriptor( a_command: SIF_COMMAND ): BOOLEAN
+	has_unique_descriptor( a_command: SIF_COMMAND[SIF_DAO[ANY]] ): BOOLEAN
 			-- True when a_command descriptor is already used for another command
 		local
 			i: INTEGER
@@ -38,23 +38,23 @@ feature -- Status
 
 feature -- Access
 
-	command( a_command_identifier: like {SIF_COMMAND}.identifier ): detachable SIF_COMMAND
+	command( a_command_identifier: like {SIF_COMMAND[SIF_DAO[ANY]]}.identifier ): detachable SIF_COMMAND[SIF_DAO[ANY]]
 			-- Not void result means the result is referencing a commmand for the requested identifier
 		do
 			Result := internal_commands.at (a_command_identifier)
 		end
 
-	create_command( a_command_identifier: like {SIF_COMMAND}.identifier ): detachable SIF_COMMAND
+	create_command( a_command_identifier: like {SIF_COMMAND[SIF_DAO[ANY]]}.identifier ): detachable SIF_COMMAND[SIF_DAO[ANY]]
 			-- Creae a new instance of a_command_identifier, void when identifier does not exist
 		do
 			Result := internal_commands.at (a_command_identifier)
 			if attached Result as l_interactor and then
-			   attached {SIF_COMMAND} l_interactor.create_new_context as la_command then
+			   attached {SIF_COMMAND[SIF_DAO[ANY]]} l_interactor.create_new_context as la_command then
 				Result := la_command
 			end
 		end
 
-	command_by_descriptor( a_command_descriptor: like {SIF_COMMAND}.descriptor ): detachable SIF_COMMAND
+	command_by_descriptor( a_command_descriptor: like {SIF_COMMAND[SIF_DAO[ANY]]}.descriptor ): detachable SIF_COMMAND[SIF_DAO[ANY]]
 			-- Not void result means the result is referencing a commmand for the requested descriptor
 		local
 			i: INTEGER
@@ -85,7 +85,7 @@ feature {SIF_PRODUCT} -- Implementation
 
 feature -- Element change
 
-	extend( a_command: SIF_COMMAND )
+	extend( a_command: SIF_COMMAND[SIF_DAO[ANY]] )
 			-- Extend a_command to the internally managed commands, but only, if
 			-- a_command descriptor does not exist. Command descriptors need to
 			-- be unique per command manager in a software system.
@@ -97,7 +97,7 @@ feature -- Element change
 
 feature {NONE} -- Implementation
 
-	internal_commands: HASH_TABLE[SIF_COMMAND, INTEGER_64]
+	internal_commands: HASH_TABLE[SIF_COMMAND[SIF_DAO[ANY]], INTEGER_64]
 			-- All available commands in the software system
 
 feature {NONE} -- Initialization

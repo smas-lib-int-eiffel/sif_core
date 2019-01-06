@@ -34,6 +34,11 @@ feature -- Interaction
 		deferred
 		end
 
+	human: BOOLEAN
+			-- True, when system interface is used for interaction with human beings.
+		deferred
+		end
+
 feature -- Access
 
 	destroy

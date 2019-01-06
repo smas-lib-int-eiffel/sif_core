@@ -36,7 +36,7 @@ feature {NONE} -- Enumeration main groups systems wise
 		once
 			Result := Ci_general_lowest
 		end
-	Ci_general_update_log_facility: INTEGER_64
+	Ci_general_log_facility: INTEGER_64
 		once
 			Result := Ci_general_lowest + 1
 		end
@@ -47,6 +47,10 @@ feature {NONE} -- Enumeration main groups systems wise
 	Ci_general_control: INTEGER_64
 		once
 			Result := Ci_general_lowest + 3
+		end
+	Ci_general_media: INTEGER_64
+		once
+			Result := Ci_general_lowest + 4
 		end
 
 note

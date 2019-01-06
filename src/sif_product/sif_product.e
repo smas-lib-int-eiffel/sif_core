@@ -33,31 +33,29 @@ feature -- Access
 			Result.to_lower
 		end
 
-feature {NONE} -- Logging
+feature -- Logging
 
 	use_logging: BOOLEAN
 			-- True, means logging is used during execution of the application
 		deferred
 		end
 
-feature {NONE} -- Manufacturing
-
-	initialize
-		-- Do product specific initializations
+	create_log_facility
+			-- Do product specific initializations
 		local
 			l_log_facility_creator: LOG_FACILITY_CREATOR
 		do
-			-- Initialize some useful logging features before everything starts...
-			print ("Product :" + name +  " initializing....%N")
-			if use_logging then
---				print ("Using log facilities.%N")
---				create l_log_facility_creator.make (true)
-				write_information ("Product :" + name +  " initializing....")
+			print ("Using log facilities.%N")
+			create l_log_facility_creator.make (true)
+		end
 
-				initialize_product
-			else
-				initialize_product
-			end
+feature {NONE} -- Manufacturing
+
+	initialize
+			-- Do product specific initializations
+		do
+			print ("Product :" + name +  " initializing....%N")
+			initialize_product
 		end
 
 	initialize_product
@@ -74,7 +72,7 @@ feature {NONE} -- Manufacturing
 		end
 
 	manufacture
-		-- Manufacture the specific product
+			-- Manufacture the specific product
 		do
 			manufacture_commands
 
@@ -86,7 +84,7 @@ feature {NONE} -- Manufacturing
 		end
 
 	launch
-		-- Launch the product for publicity
+			-- Launch the product for publicity
 		do
 			-- Intended to be empty
 		end
@@ -111,7 +109,7 @@ feature {NONE} -- Manufacturing
 	log_commands
 		local
 			l_first: BOOLEAN
-			l_command: SIF_COMMAND
+			l_command: SIF_COMMAND[SIF_DAO[ANY]]
 		do
 			from
 				command_manager.commands.start

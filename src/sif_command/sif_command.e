@@ -8,11 +8,11 @@ note
 			  Web Framework ;-) in a web system interface
 			  )
 	    or object (e.g. a controller object) makes a request, a command object will
-	    have to be used which can carry out the specific request. Environment requests can
+	    have to be used which can carry out the specific request. Environmental requests can
 	    be organized into inheritance taxonomies.
 
 	    Besides performing actions needed for environment requests, commands can be used
-	    for logging, executing or undoing.
+	    for logging, executing, undoing or testing.
 	    
 	    With commands software systems will get flexible and extendable system interfaces
 	    and requests.
@@ -29,7 +29,7 @@ note
 	    external systems to execute commands automatically or to implement a generic way
 	    to execute an identified command.
 	    
-	    Commands also have a descriptor, which has to be unique for ll commands the command
+	    Commands also have a descriptor, which has to be unique for all commands the command
 	    manager is managing. The desciptor can therefore be used also to find a command
 	    in cases where an environment wants to reference a command through a readable identification.
 
@@ -40,19 +40,28 @@ note
 	    elements to react and interchange information in a platform and system interface
 	    independent way.
 	    
+	    Commands store and access data using Data Access Objects. A command can have, zero,
+	    one or more of these DAO's. They can be created statically or dynamically.
+	    The DAO makes commands agnostic for the way data is stored, making them completely
+	    reusable to be able to be executed on any environment without changing the implementation,
+	    which is one of the key factors of the System Interface Framework.
+	    
 	    Commands follow the following dynamic flow:
-	    			-- 1st stage:   do_execute starts the execution, interaction is possible to publish events
-	    			-- 2nd stage:   confirm -> confirmation if needed to persist the executed functionality
-	    						    cancel  -> cancellation if needed to cancel the executed functionality
-	    			-- 3trd stage:  result  -> publish the command results using sorted interaction elements for the
-	    									result in the system interface
-	    	The separation of the first two stages is most important in system interfaces which are viewable.
-	    	This is while the input of information in these kind of environments is done in two stages, first present
-	    	the information in a interaction form and second a confirmation of cancellation of the information.
-	    	In web based environments this separation is not immediately neccesary but can comply easily for a
-	    	uniform command handling in both environments.
-	    	The result stage is more related to web based environments where result information is put in responses
-	    	to requests.
+	    			-- 1st stage:   pre execution for doing special initialization prior to execution where it
+	    			                is not possible to publish events.
+	    			-- 2nd stage:	do_execute starts the execution, interaction is possible to publish events,
+	    			                which will be needed to supply information to views in case of system
+	    			                interfaces, which are intended for human interaction
+	    			-- 3hrd stage:  post execution results should be available, human interaction in normal flow
+	    							should be ready and controlled. 
+	    							   -> publish the command results using sorted interaction elements for the
+	    							      result in the system interface.
+	    							when results are to be stored, use the data access objects to do so.
+	    							post execution is executed automatically for commands executing with attached
+	    							system interface which is not used for human interaction. In those systems
+	    							controllers should control the post execution. 
+	    							This way commands can automatically execute in web API's environments and
+	    							controlled by human actions in human/user based system interface environments.
 		 	]"
 	author: "Paul Gokke"
 	date: "$Date$"
@@ -62,21 +71,22 @@ note
 	legal: "See notice at end of class."
 
 deferred class
-	SIF_COMMAND
-	inherit
-		SIF_INTERACTOR
-			rename
-				make as interactor_make
-			redefine
-				prepare_interaction_elements,
-				pre_execute,
-				cleanup
-			end
+	SIF_COMMAND[G -> SIF_DAO[ANY] create make end]
 
-		SIF_SHARED_COMMAND_MANAGER
-			undefine
-				default_create
-			end
+inherit
+	SIF_INTERACTOR
+		rename
+			make as interactor_make
+		redefine
+			prepare_interaction_elements,
+			pre_execute,
+			cleanup
+		end
+
+	SIF_SHARED_COMMAND_MANAGER
+		undefine
+			default_create
+		end
 
 feature {NONE} -- Initialization
 
@@ -85,6 +95,10 @@ feature {NONE} -- Initialization
 			command_identifier_is_not_0: a_command_identifier /= 0
 		do
 			create internal_elements.make(0)
+			-- Data Access
+			create data_access_object.make
+			create data_operation_enumeration
+			create data_access_object_for_references.make (0)
 			interactor_make(an_interaction_elements_set)
 			identifier := a_command_identifier
 			descriptor := a_descriptor
@@ -99,6 +113,10 @@ feature {NONE} -- Initialization
 			create query_interaction_elements.make
 			create result_interaction_elements.make
 			create internal_elements.make(0)
+			-- Data Access
+			create data_access_object.make
+			create data_access_object_for_references.make (0)
+			create data_operation_enumeration
 			check attached command_descriptors.item (a_command_identifier) as la_descriptor then
 				make_with_identifier_and_ie_set (a_command_identifier, la_descriptor, interaction_elements)
 			end
@@ -107,7 +125,7 @@ feature {NONE} -- Initialization
 			end
 		end
 
-feature {NONE} -- Basic Interaction elements
+feature -- Basic Interaction elements
 
 	prepare_interaction_elements
 			-- Prepare the necessary interaction elements for the interactor
@@ -141,7 +159,13 @@ feature -- Execution
 
 	pre_execute( si : SIF_SYSTEM_INTERFACE )
 			-- Perform pre-execution of the current interactor
+		local
+			l_page_number: STRING
+			l_id: STRING
+			l_count_total: INTEGER
 		do
+			check data_operation_enumeration.data_operation /= {SIF_ENUMERATION_DATA_OPERATION}.undefined end
+
 			filter := false
 			if attached query_interaction_elements as l_query_iess then
 				across l_query_iess as l_ie loop
@@ -151,6 +175,143 @@ feature -- Execution
 						end
 					end
 				end
+			end
+
+			if data_operation_enumeration.data_operation = {SIF_ENUMERATION_DATA_OPERATION}.read then
+				l_page_number := interaction_element_string_value (Iei_page_number)
+				if filter and then l_page_number.is_empty then
+					l_id := interaction_element_string_value (Iei_resource_identification)
+					data_access_object.load_by_identification (l_id)
+					if not attached data_access_object.last_item then
+						--(create {SHOP_LOG_FACILITY}).log_item_not_found (resource_name, l_id)
+						execution_result.put_failed
+					end
+				elseif
+					--attached {SIF_SYSTEM_INTERFACE_WEB_EWF} si as la_si and then
+					--attached {STRING_TABLE [WSF_VALUE]} la_si.request.query_parameters as la_paras and then
+					--attached query_interaction_elements as la_query_interaction_elements
+					filter
+				then
+					--data_access_object.load_by_criteria (to_criteria (la_paras))
+				else
+					if pagination_capable then
+						data_access_object.load_item_count
+						if l_page_number.is_empty then
+							l_page_number := "1"
+						end
+						set_pagination (l_page_number.to_natural, data_access_object.last_count.to_natural_32)
+						data_access_object.load_page ((l_page_number.to_natural - 1) * command_manager.count_per_page + 1, command_manager.count_per_page)
+					else
+						data_access_object.load_all
+					end
+				end
+			end
+		end
+
+
+	post_execute( si : SIF_SYSTEM_INTERFACE )
+			-- Perform post-execution of the current interactor
+		do
+			if not si.human then
+				if data_operation_enumeration.data_operation = {SIF_ENUMERATION_DATA_OPERATION}.create_ then
+					-- Map interaction elements to an item, so it is able to be stored by the data access object
+					store_item
+				end
+
+				if data_operation_enumeration.data_operation = {SIF_ENUMERATION_DATA_OPERATION}.update then
+					-- Map interaction elements to an item, so it is able to be stored by the data access object
+					update_item
+				end
+
+				if data_operation_enumeration.data_operation = {SIF_ENUMERATION_DATA_OPERATION}.delete then
+					-- Map interaction elements to an item, so it is able to be stored by the data access object
+					delete_item
+				end
+
+				if execution_result.passed and data_access_object.is_ok then
+					update_result (data_access_object.last_list, filter)
+				end
+			end
+		end
+
+feature -- Data Access Object - DAO
+
+	data_access_object: G
+		-- The data access object for the command.
+
+	data_access_object_for_references: HASH_TABLE[SIF_DAO[ANY], like {SIF_INTERACTION_ELEMENT_IDENTIFIERS}.Iei_lowest]
+
+	data_operation_enumeration: SIF_ENUMERATION_DATA_OPERATION
+		-- Default undefined and will be checked during command execution.
+		-- Make it read if data should be loaded through DAO when command is executed.
+		-- Most commands behave in a way data retrieval is their primary goal.
+		-- In a CRUD sense this is the R (Read) element. The experience is that this
+		-- is the most used kind of command, the command to read a certain amount of data and
+		-- transform/map that data to an object of a Model class and also in the case of
+		-- the System Interface Framework to a description in interaction elements so
+		-- the SIF based software system is able to interact with the outside world.
+		-- The SIF framework forces the caller of a command to set the data operation mode
+		-- of the command. So initially the data operation is undefined, making it impossible
+		-- to execute the command which is checked in the pre execution phase.
+
+	Iei_resource_identification: INTEGER_64
+			--  Identifier for the 'identification' interaction element of this resource
+		deferred
+		end
+
+	Iei_resource_list: INTEGER_64
+			--  Identifier for the 'list' interaction element of this resource
+		deferred
+		end
+
+	store_item
+			-- Map interaction elements into an instance of an object which can be stored by the data access object as an item
+		do
+			-- Intended to be empty, please redefine when command needs to be able to store new items
+		end
+
+	update_item
+			-- Map interaction elements into an instance of an object which can be updated by the data access object from an existing item
+		do
+			-- Intended to be empty, please redefine when command needs to be able to update an existing item
+		end
+
+	delete_item
+			-- Map interaction elements into an instance of an object which can be deleted by the data access object
+		do
+			-- Intended to be empty, please redefine when command needs to be able to delete an existing item
+		end
+
+feature -- Output
+
+	update_result (some_items: LIST [ANY]; is_filtered: BOOLEAN)
+			-- Update result set with data from `some_items', depending on whether it `is_filtered' or not.
+		do
+			if attached result_list (Iei_resource_list) as l_ie_list_items then
+				across
+					some_items as items
+				loop
+					if attached {like {G}.last_item} items.item as la_item then
+						l_ie_list_items.elements.extend (item_ies (la_item, is_filtered))
+					end
+				end
+				update_counts (data_access_object.last_count, some_items.count)
+			end
+		end
+
+	item_ies (an_item: like data_access_object.last_item; is_filtered: BOOLEAN): SIF_INTERACTION_ELEMENT_SORTED_SET
+			-- Result set for `an_item' depending on whether it `is_filtered' or not
+		deferred
+		end
+
+feature {NONE} -- Normal interaction
+
+	create_mandatory_text_element( a_ie_identifier: like {SIF_INTERACTION_ELEMENT}.identifier)
+		local
+			l_text: SIF_IE_TEXT
+		do
+			check attached descriptors.item (a_ie_identifier) as la_descriptor then
+				create l_text.make(a_ie_identifier, interaction_elements, {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.enum_mandatory, la_descriptor)
 			end
 		end
 
@@ -329,11 +490,8 @@ feature -- Output
 			-- Add an `Iei_self_identifier' element to `a_parent'.
 			-- If `is_filtered' fill it with `an_id'.
 		local
---			l_url: STRING
 			l_text: SIF_IE_TEXT
---			l_descriptor: STRING
 		do
-			--l_descriptor := "The url to this resource"
 			create l_text.make (Iei_self_identifier, a_parent, {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.enum_descriptive, "self")
 			l_text.put_input (an_id)
 		end
@@ -387,7 +545,9 @@ feature -- Access
 		end
 
 	is_pagination_capable: BOOLEAN
-			-- True when the command is pagination capable
+			-- True when the command is pagination capable, normally usefull when the command can
+			-- have a large list of results, which can take a long time to process in certain
+			-- environments.
 		do
 			Result := pagination_capable
 		end

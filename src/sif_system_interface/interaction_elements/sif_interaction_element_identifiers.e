@@ -155,6 +155,10 @@ feature {SIF_INTERACTION_ELEMENT_IDENTIFIERS} -- Enumeration
 		once
 			Result := Iei_general_lowest + 202
 		end
+	Iei_generic_log_facility_identification: INTEGER_64
+		once
+			Result := Iei_general_lowest + 203
+		end
 
 	-- Generic authorisation
 	Iei_generic_authorisation_user_identification: INTEGER_64
@@ -202,6 +206,25 @@ feature {SIF_INTERACTION_ELEMENT_IDENTIFIERS} -- Enumeration
 	Iei_generic_control_caption: INTEGER_64
 		once
 			Result := Iei_general_lowest + 500
+		end
+
+	-- Media
+
+	Iei_media_caption: INTEGER_64
+		once
+			Result := Iei_general_lowest + 600
+		end
+	Iei_media_name: INTEGER_64
+		once
+			Result := Iei_general_lowest + 601
+		end
+	Iei_media: INTEGER_64
+		once
+			Result := Iei_general_lowest + 602
+		end
+	Iei_media_list: INTEGER_64
+		once
+			Result := Iei_general_lowest + 603
 		end
 
 feature {SIF_INTERACTION_ELEMENT_IDENTIFIERS} -- Range setting

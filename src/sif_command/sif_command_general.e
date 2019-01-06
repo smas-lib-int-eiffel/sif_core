@@ -7,11 +7,11 @@ note
 	legal: "See notice at end of class."
 
 deferred class
-	SIF_COMMAND_GENERAL
+	SIF_COMMAND_GENERAL[G -> SIF_DAO[ANY] create make end ]
 	inherit
-		SIF_COMMAND
+		SIF_COMMAND[G]
 			redefine
-				default_create,
+--				default_create,
 				make_with_identifier_and_ie_set
 			select
 				default_create
@@ -29,10 +29,10 @@ deferred class
 
 feature {NONE} -- Initialization
 
-	default_create
-		do
-			command_descriptors.put ("Update log facility", Ci_general_update_log_facility)
-		end
+--	default_create
+--		do
+--			command_descriptors.put ("Log facility extended", Ci_general_log_facility)
+--		end
 
 	make_with_identifier_and_ie_set (a_command_identifier : INTEGER_64; a_descriptor: like descriptor; an_interaction_elements_set: SIF_INTERACTION_ELEMENT_SORTED_SET)
 		do

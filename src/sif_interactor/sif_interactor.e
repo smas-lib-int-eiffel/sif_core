@@ -24,29 +24,29 @@ note
 
 deferred class
 	SIF_INTERACTOR
-	inherit
 
-		SIF_INTERACTION_ELEMENT_IDENTIFIERS
+inherit
+	SIF_INTERACTION_ELEMENT_IDENTIFIERS
 
-		DATE_TIME_TOOLS
-			rename
-				name as date_time_tools_name
-			undefine
-				default_create
-			end
+	DATE_TIME_TOOLS
+		rename
+			name as date_time_tools_name
+		undefine
+			default_create
+		end
 
-		SIF_PERMISSION_TYPE
-			rename
-				make as sif_permission_type_make,
-				type as sif_permission_type
-			undefine
-				default_create
-			end
+	SIF_PERMISSION_TYPE
+		rename
+			make as sif_permission_type_make,
+			type as sif_permission_type
+		undefine
+			default_create
+		end
 
-		SHARED_LOG_FACILITY
-			undefine
-				default_create
-			end
+	SHARED_LOG_FACILITY
+		undefine
+			default_create
+		end
 
 feature {NONE} -- Initialization
 
@@ -110,6 +110,8 @@ feature frozen -- Execution
 				publish_caption
 
 				handle_input
+
+				post_execute( si )
 			else
 				execution_result.put_exception
 			end
@@ -133,6 +135,11 @@ feature -- Execution
 
 	do_execute( si : SIF_SYSTEM_INTERFACE )
 			-- Perform execution of the current interactor
+		deferred
+		end
+
+	post_execute( si : SIF_SYSTEM_INTERFACE )
+			-- Perform post-execution of the current interactor
 		deferred
 		end
 
@@ -191,6 +198,10 @@ feature -- Access
 			create Result.make (100)
 
 			Result.put ("log_priority", Iei_generic_log_facility_priority)
+			Result.put ("log_facility_result_list", Iei_generic_log_facility_list)
+			Result.put ("ie media", Iei_media)
+			Result.put ("media_name", Iei_media_name)
+			Result.put ("media_result_list", Iei_media_list)
 		end
 
 feature {NONE} -- Interaction
@@ -310,7 +321,7 @@ feature {NONE} -- Validation
 			end
 		end
 
-feature {NONE} -- Basic Interaction elements
+feature -- Basic Interaction elements
 
 	prepare_interaction_elements
 			-- Prepare the necessary interaction elements for the interactor
@@ -443,14 +454,6 @@ feature -- Convenience
 			set_text (an_id, a_parent, {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.enum_descriptive, a_text)
 		end
 
-	new_result_list (an_id: INTEGER_64; a_parent: SIF_INTERACTION_ELEMENT_SORTED_SET): SIF_IE_LIST
-			-- New result list with `an_id', added to `a_parent'
-		do
-			check attached Descriptors.item (an_id) as la_descriptor then
-				create Result.make (an_id, a_parent, {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.enum_result, la_descriptor)
-			end
-		end
-
 	new_ie_event (an_id: INTEGER_64; a_parent: SIF_INTERACTION_ELEMENT_SORTED_SET; a_type: like {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.type): SIF_IE_EVENT
 			-- New text element with `an_id' and `a_type', added to `a_parent'
 		do
@@ -464,6 +467,14 @@ feature -- Convenience
 		do
 			check attached Descriptors.item (an_id) as la_descriptor then
 				create Result.make (an_id, a_parent, a_type, la_descriptor)
+			end
+		end
+
+	new_ie_text_iso_8601_date_time (an_id: INTEGER_64; a_parent: SIF_INTERACTION_ELEMENT_SORTED_SET; a_type: like {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.type): SIF_IE_TEXT_ISO_8601
+			-- New text element with `an_id' and `a_type', added to `a_parent'
+		do
+			check attached Descriptors.item (an_id) as la_descriptor then
+				create Result.make_date_time (an_id, a_parent, a_type, la_descriptor)
 			end
 		end
 
@@ -516,6 +527,37 @@ feature -- Convenience
 			Result := new_object (an_id, a_parent, {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.enum_result)
 		end
 
+feature -- Convenience List wise
+
+	new_list (an_id: INTEGER_64; a_parent: SIF_INTERACTION_ELEMENT_SORTED_SET; a_type: like {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.type;): SIF_IE_LIST
+			-- New list with `an_id', added to `a_parent'
+		local
+			l_ies: SIF_INTERACTION_ELEMENT_SORTED_SET
+		do
+			check attached Descriptors.item (an_id) as la_descriptor then
+				create Result.make (an_id, a_parent, a_type, la_descriptor)
+				create l_ies.make
+				Result.elements.extend (l_ies)
+			end
+		end
+
+	new_optional_list (an_id: INTEGER_64; a_parent: SIF_INTERACTION_ELEMENT_SORTED_SET): SIF_IE_LIST
+			-- New optional list with `an_id', added to `a_parent'
+		do
+			Result := new_list (an_id, a_parent, {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.enum_optional)
+		end
+
+	new_mandatory_list (an_id: INTEGER_64; a_parent: SIF_INTERACTION_ELEMENT_SORTED_SET): SIF_IE_LIST
+			-- New mandatory list with `an_id', added to `a_parent'
+		do
+			Result := new_list (an_id, a_parent, {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.enum_mandatory)
+		end
+
+	new_result_list (an_id: INTEGER_64; a_parent: SIF_INTERACTION_ELEMENT_SORTED_SET): SIF_IE_LIST
+			-- New result list with `an_id', added to `a_parent'
+		do
+			Result := new_list (an_id, a_parent, {SIF_ENUM_INTERACTION_ELEMENT_TYPE}.enum_result)
+		end
 note
 	copyright: "Copyright (c) 2014-2018, SMA Services"
 	license:   "Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"
