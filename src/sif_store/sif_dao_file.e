@@ -10,7 +10,9 @@ class
 inherit
 	SIF_DAO [FILE]
 		redefine
-			do_load_by_identification
+			do_load_by_identification,
+			last_saved_item,
+			last_updated_item
 		end
 
 	OPERATING_ENVIRONMENT
@@ -65,6 +67,20 @@ feature -- Input
 				end
 			end
 			file_name := void
+		end
+
+feature -- Access
+
+	last_saved_item: ARRAYED_LIST[FILE]
+			-- Used to access model data via their identification
+		once
+			create Result.make(1)
+		end
+
+	last_updated_item: ARRAYED_LIST [FILE]
+			-- Used to access model data via their identification
+		once
+			create Result.make(1)
 		end
 
 feature -- Element change

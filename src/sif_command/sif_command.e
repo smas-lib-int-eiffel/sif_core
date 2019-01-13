@@ -211,7 +211,10 @@ feature -- Execution
 
 	post_execute( si : SIF_SYSTEM_INTERFACE )
 			-- Perform post-execution of the current interactor
+		local
+			l_item: ARRAYED_LIST [ANY]
 		do
+			create l_item.make (0)
 			if not si.human then
 				if data_operation_enumeration.data_operation = {SIF_ENUMERATION_DATA_OPERATION}.create_ then
 					-- Map interaction elements to an item, so it is able to be stored by the data access object
@@ -229,7 +232,15 @@ feature -- Execution
 				end
 
 				if execution_result.passed and data_access_object.is_ok then
-					update_result (data_access_object.last_list, filter)
+					if data_operation_enumeration.data_operation = {SIF_ENUMERATION_DATA_OPERATION}.read then
+						update_result (data_access_object.last_list, filter)
+					end
+					if data_operation_enumeration.data_operation = {SIF_ENUMERATION_DATA_OPERATION}.create_ then
+						update_result (data_access_object.last_saved_item, true)
+					end
+					if data_operation_enumeration.data_operation = {SIF_ENUMERATION_DATA_OPERATION}.update then
+						update_result (data_access_object.last_updated_item, true)
+					end
 				end
 			end
 		end

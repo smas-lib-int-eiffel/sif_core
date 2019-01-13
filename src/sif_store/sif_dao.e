@@ -10,6 +10,7 @@ deferred class
 inherit
 	DAO_LOADER [G]
 
+
 feature -- Input
 
 	do_load_by_identification (an_identification: STRING)
@@ -30,25 +31,29 @@ feature -- Input
 
 feature -- Element change
 
-	save_item (an_item: G)
+	save_item (a_item: G)
 			-- Save a specific item in the store
 		do
 			is_ok := false
-			do_save_item (an_item)
+			last_saved_item.wipe_out
+			do_save_item (a_item)
 			if is_ok then
-				last_count := last_list.count
+				last_count := 1
+				last_saved_item.extend (a_item)
 			else
 				last_count := 0
 			end
 		end
 
-	update_item (an_item: G)
+	update_item (a_item: G)
 			-- Update a specific item in the store
 		do
 			is_ok := false
-			do_update_item (an_item)
+			last_updated_item.wipe_out
+			do_update_item (a_item)
 			if is_ok then
-				last_count := last_list.count
+				last_count := 1
+				last_updated_item.extend (a_item)
 			else
 				last_count := 0
 			end
@@ -60,6 +65,18 @@ feature -- Element change
 			is_ok := false
 			do_delete_item (an_item)
 			last_count := 0
+		end
+
+feature -- Access
+
+	last_saved_item: like last_list
+			-- is_ok, will hold the last saved item
+		deferred
+		end
+
+	last_updated_item: like last_list
+			-- is_ok, will hold the last updated item
+		deferred
 		end
 
 feature {NONE} -- Implementation

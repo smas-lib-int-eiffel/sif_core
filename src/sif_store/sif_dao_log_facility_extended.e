@@ -10,7 +10,9 @@ class
 inherit
 	SIF_DAO [LOG_FACILITY_EXTENDED]
 		redefine
-			do_update_item
+			do_update_item,
+			last_saved_item,
+			last_updated_item
 		end
 
 	OPERATING_ENVIRONMENT
@@ -50,6 +52,20 @@ feature -- Element change
 			-- Update a specific item in the store
 		do
 			is_ok := true
+		end
+
+feature -- Access
+
+	last_saved_item: ARRAYED_LIST[LOG_FACILITY_EXTENDED]
+			-- Used to access model data via their identification
+		once
+			create Result.make(1)
+		end
+
+	last_updated_item: ARRAYED_LIST [LOG_FACILITY_EXTENDED]
+			-- Used to access model data via their identification
+		once
+			create Result.make(1)
 		end
 
 end
