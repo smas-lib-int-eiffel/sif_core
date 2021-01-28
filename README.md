@@ -19,7 +19,7 @@ The second word of the system **interface** framework has this meaning.
 
 ----
 ## What is Framework?
-The object oriented method allows us to build reusable modules that still have replaceable, not completely frozen elements models that serve as general schemes and can be adapted to various specific situations. When deferred or abstract classes are used and combined with the  idea  off components  intended to work together we call this a **framework**.
+The object oriented method allows us to build reusable modules that still have replaceable, not completely frozen elements models that serve as general schemes and can be adapted to various specific situations. When deferred or abstract classes are used and combined with the  idea  of components  intended to work together we call this a **framework**.
 
 This is what the third word means of the system interface **framework**.
 
