@@ -22,7 +22,7 @@
 		<library name="alpha_base" location="$ISE_LIBRARY\external\library\base\kernel\base_kernel.ecf" readonly="false"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="base_process" location="$ISE_LIBRARY\library\process\base\base_process.ecf"/>
-		<library name="config" location="\usr\local\eiffel\external\library\config\config.ecf"/>
+		<library name="config" location="$ISE_LIBRARY\external\library\config\config.ecf"/>
 		<library name="criteria" location="$ISE_LIBRARY\unstable\library\pattern\criteria\criteria.ecf"/>
 		<library name="data_access_object" location="$ISE_LIBRARY\external\library\store\dao\data_access_object.ecf" readonly="false"/>
 		<library name="gobo_regexp" location="$ISE_LIBRARY\library\gobo\gobo_regexp-safe.ecf"/>
