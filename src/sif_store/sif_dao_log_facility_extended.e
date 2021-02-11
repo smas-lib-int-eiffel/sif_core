@@ -10,9 +10,7 @@ class
 inherit
 	SIF_DAO [LOG_FACILITY_EXTENDED]
 		redefine
-			do_update_item,
-			last_saved_item,
-			last_updated_item
+			do_update_item
 		end
 
 	OPERATING_ENVIRONMENT
