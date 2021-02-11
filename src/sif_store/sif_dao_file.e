@@ -10,9 +10,7 @@ class
 inherit
 	SIF_DAO [FILE]
 		redefine
-			do_load_by_identification,
-			last_saved_item,
-			last_updated_item
+			do_load_by_identification
 		end
 
 	OPERATING_ENVIRONMENT
